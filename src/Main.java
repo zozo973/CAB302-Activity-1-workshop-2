@@ -8,17 +8,7 @@ public class Main {
     private static ArrayList<User> users = new ArrayList<>();
 
     // Mock authentication service that always returns the first user when log in, and does nothing when sign up
-    private static IAuthenticationService authService = new IAuthenticationService() {
-        @Override
-        public User signUp(String username, String password) {
-            return null;
-        }
-
-        @Override
-        public User logIn(String username, String password) {
-            return users.get(0);
-        }
-    };
+    private static IAuthenticationService authService = new AuthenticationService(users);
     private static boolean isRunning = true;
 
     /**
@@ -26,7 +16,6 @@ public class Main {
      * @param args The command-line arguments.
      */
     public static void main(String[] args) {
-        users.add(new User("test", "test"));
         while (isRunning) {
             showMenu();
         }
@@ -94,8 +83,14 @@ public class Main {
         String username = scanner.nextLine();
         System.out.print("Enter your password: ");
         String password = scanner.nextLine();
+
         User user = authService.signUp(username, password);
-        // TODO Later: Shows a message based on the result
+
+        if (user != null) {
+            System.out.println("User " + username + " has been created successfully!");
+        } else {
+            System.out.println("The username is already taken!");
+        }
     }
 
     /**
